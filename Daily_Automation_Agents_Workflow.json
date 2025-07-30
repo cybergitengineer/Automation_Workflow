@@ -1,0 +1,159 @@
+{
+    "name": "Daily Automation Agents",
+    "nodes": [
+        {
+            "name": "Trigger - Morning",
+            "type": "cron",
+            "schedule": "0 6 * * 1-5"
+        },
+        {
+            "name": "News Fetcher",
+            "type": "httpRequest",
+            "url": "https://feedly.com/rss/cybersecurity"
+        },
+        {
+            "name": "AI Summarizer",
+            "type": "openai",
+            "prompt": "Summarize tech & cybersecurity headlines into 3 bullet points."
+        },
+        {
+            "name": "Email Dispatcher",
+            "type": "gmail",
+            "action": "send",
+            "to": "agenticmate@gmail.com"
+        },
+        {
+            "name": "Trigger - Study",
+            "type": "cron",
+            "schedule": "0 7 * * 1-5"
+        },
+        {
+            "name": "CISSP Study Notes",
+            "type": "openai",
+            "prompt": "Summarize CISSP Domain topic & create 10 flashcards."
+        },
+        {
+            "name": "Notion Logger",
+            "type": "notion",
+            "database": "Study Tracker"
+        },
+        {
+            "name": "Trigger - Job Search",
+            "type": "cron",
+            "schedule": "0 13 * * 1-5"
+        },
+        {
+            "name": "Job Scraper",
+            "type": "apify",
+            "actor": "linkedin-scraper"
+        },
+        {
+            "name": "Resume Tailor",
+            "type": "openai",
+            "prompt": "Tailor resume for job postings."
+        },
+        {
+            "name": "Recruiter Outreach",
+            "type": "gmail",
+            "action": "send_bulk"
+        },
+        {
+            "name": "Trigger - Projects",
+            "type": "cron",
+            "schedule": "30 15 * * 1-5"
+        },
+        {
+            "name": "Lab Auto-Deploy",
+            "type": "shellCommand",
+            "command": "docker-compose up vulnlab"
+        },
+        {
+            "name": "Code Assistant",
+            "type": "copilot",
+            "action": "assist"
+        },
+        {
+            "name": "GitHub Push",
+            "type": "github",
+            "action": "commit_push"
+        },
+        {
+            "name": "Trigger - Business Research",
+            "type": "cron",
+            "schedule": "30 18 * * 1-5"
+        },
+        {
+            "name": "Market Research",
+            "type": "perplexity",
+            "query": "AI & Cybersecurity market trends"
+        },
+        {
+            "name": "Financial Model",
+            "type": "openai",
+            "prompt": "Build basic revenue projection for side hustle."
+        },
+        {
+            "name": "No-Code Prototype",
+            "type": "bubble",
+            "action": "deploy"
+        }
+    ],
+    "connections": [
+        [
+            "Trigger - Morning",
+            "News Fetcher"
+        ],
+        [
+            "News Fetcher",
+            "AI Summarizer"
+        ],
+        [
+            "AI Summarizer",
+            "Email Dispatcher"
+        ],
+        [
+            "Trigger - Study",
+            "CISSP Study Notes"
+        ],
+        [
+            "CISSP Study Notes",
+            "Notion Logger"
+        ],
+        [
+            "Trigger - Job Search",
+            "Job Scraper"
+        ],
+        [
+            "Job Scraper",
+            "Resume Tailor"
+        ],
+        [
+            "Resume Tailor",
+            "Recruiter Outreach"
+        ],
+        [
+            "Trigger - Projects",
+            "Lab Auto-Deploy"
+        ],
+        [
+            "Lab Auto-Deploy",
+            "Code Assistant"
+        ],
+        [
+            "Code Assistant",
+            "GitHub Push"
+        ],
+        [
+            "Trigger - Business Research",
+            "Market Research"
+        ],
+        [
+            "Market Research",
+            "Financial Model"
+        ],
+        [
+            "Financial Model",
+            "No-Code Prototype"
+        ]
+    ]
+}

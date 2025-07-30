@@ -1,0 +1,53 @@
+
+version: '3.8'
+
+services:
+  job_hunter:
+    build: .
+    container_name: job_hunter_agent
+    command: python Job_Hunter_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    restart: unless-stopped
+
+  study_assistant:
+    build: .
+    container_name: study_assistant_agent
+    command: python Study_Assistant_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+
+  business_research:
+    build: .
+    container_name: business_research_agent
+    command: python Business_Research_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+
+  news_agent:
+    build: .
+    container_name: news_agent
+    command: python News_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    restart: unless-stopped
+
+  class_summarizer:
+    build: .
+    container_name: class_summarizer_agent
+    command: python Class_Summarizer_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+
+  project_builder:
+    build: .
+    container_name: project_builder_agent
+    command: python Project_Builder_Agent.py
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped

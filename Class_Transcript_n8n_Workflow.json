@@ -1,0 +1,60 @@
+{
+    "name": "Class Transcript Auto Generator",
+    "nodes": [
+        {
+            "name": "Trigger - Google Drive Upload",
+            "type": "googleDriveTrigger",
+            "credentials": "Google Drive Account",
+            "properties": {
+                "folderId": "YOUR_FOLDER_ID",
+                "watchFor": "fileUploaded"
+            }
+        },
+        {
+            "name": "Download File",
+            "type": "googleDriveDownload",
+            "properties": {
+                "fileId": "={{ $json[\"fileId\"] }}"
+            }
+        },
+        {
+            "name": "Whisper Transcription",
+            "type": "httpRequest",
+            "properties": {
+                "method": "POST",
+                "url": "https://api.openai.com/v1/audio/transcriptions",
+                "headers": {
+                    "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+                },
+                "bodyParameters": {
+                    "model": "whisper-1",
+                    "file": "={{ $binary.data }}",
+                    "response_format": "text"
+                },
+                "sendBinaryData": true
+            }
+        },
+        {
+            "name": "Save to File",
+            "type": "writeBinaryFile",
+            "properties": {
+                "fileName": "class_transcript.txt",
+                "destinationPath": "/mnt/data/class_transcript.txt"
+            }
+        }
+    ],
+    "connections": [
+        [
+            "Trigger - Google Drive Upload",
+            "Download File"
+        ],
+        [
+            "Download File",
+            "Whisper Transcription"
+        ],
+        [
+            "Whisper Transcription",
+            "Save to File"
+        ]
+    ]
+}
