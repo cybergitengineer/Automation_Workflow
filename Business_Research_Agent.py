@@ -1,9 +1,16 @@
-
+from dotenv import load_dotenv
 import os
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
 from pathlib import Path
 import datetime
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+
+# Load environment variables
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Initialize ChatOpenAI
+chat = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
 
 # Setup OpenAI model
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -16,7 +23,7 @@ def get_business_idea():
 # Generate market research
 def generate_market_research(idea):
     prompt = f"Create a market analysis for this idea: {idea}. Include market size, key competitors, customer segments, and opportunities in 500 words."
-    return chat.predict(prompt)
+    return chat.invoke(prompt)
 
 # Generate financial model summary
 def generate_financial_model(idea):
@@ -24,19 +31,23 @@ def generate_financial_model(idea):
     return chat.predict(prompt)
 
 # Save both outputs to a text file
-def save_outputs(research, finance, idea):
-    today = datetime.date.today().isoformat()
-    filename = f"Business_Idea_Research_{today}.txt"
-    content = f"Business Idea: {idea}
+def save_to_file(content, topic):
+    # Extract actual string content from AIMessage
+    if hasattr(content, "content"):
+        content = content.content
 
---- Market Research ---
-{research}
+    # Use a timestamp for uniqueness
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"CISSP_{topic.replace(' ', '_')}_{timestamp}.txt"
 
---- Financial Model ---
-{finance}"
-    path = Path(filename)
-    path.write_text(content)
+    output_dir = Path("outputs")
+    output_dir.mkdir(exist_ok=True)
+
+    path = output_dir / filename
+    path.write_text(content, encoding="utf-8")
     return str(path)
+
+
 
 def main():
     idea = get_business_idea()

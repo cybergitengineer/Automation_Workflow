@@ -1,9 +1,17 @@
-
+from dotenv import load_dotenv
 import os
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
 from pathlib import Path
 import datetime
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+
+# Load environment variables
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Initialize ChatOpenAI
+chat = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
+
 
 # Setup OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -17,14 +25,25 @@ def load_class_notes(file_path):
 # Summarize notes
 def summarize_class(notes):
     prompt = f"Summarize the following university lecture transcript into key points with bullet list and 3 takeaway questions:\n{notes}"
-    return chat.predict(prompt)
+    return chat.invoke(prompt)
 
 # Save output
+from langchain_core.messages import AIMessage  # Add this if not already imported
+
+# Save output to file
 def save_summary(summary):
-    today = datetime.date.today().isoformat()
-    path = Path(f"Class_Summary_{today}.txt")
-    path.write_text(summary)
+    if isinstance(summary, AIMessage):
+        summary = summary.content
+
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    output_dir = Path("outputs")
+    output_dir.mkdir(exist_ok=True)
+
+    path = output_dir / f"Class_Summary_{timestamp}.txt"
+    path.write_text(summary, encoding="utf-8")
     return str(path)
+
+
 
 def main():
     # Replace with your actual transcript file path
